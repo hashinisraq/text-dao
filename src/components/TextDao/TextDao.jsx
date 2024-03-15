@@ -25,6 +25,7 @@ const TextDao = () => {
       const result = await model.generateContent(text);
       const response = await result.response;
       const answer = response.text();
+      
       const updatedAnswers = [...answerHistory, "↪ " + answer];
       setAnswerHistory(updatedAnswers);
       setLoading(false);
@@ -37,7 +38,7 @@ const TextDao = () => {
       {questionHistory.map((question, index) => (
         <div key={index}>
           <p className="question" style={{textAlign:"end"}}>{question}</p>
-          <p className="answer">{answerHistory[index]}</p>
+          <pre className="answer">{answerHistory[index]}</pre>
         </div>
       ))}
       <Form>
