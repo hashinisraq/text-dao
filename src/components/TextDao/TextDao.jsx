@@ -34,7 +34,7 @@ const TextDao = () => {
 
   return (
     <div className="p-2 m-2">
-      <p>↪ Hey, How can I help you?</p>
+      <p>↪ Hey, How can I assist you today?</p>
       {questionHistory.map((question, index) => (
         <div key={index}>
           <p className="question" style={{textAlign:"end"}}>{question}</p>
@@ -66,7 +66,7 @@ const TextDao = () => {
               {loading ? (
                 <Spinner animation="border" size="sm" />
               ) : (
-                "Bolo Ekhon"
+                "Reply Dao"
               )}
             </Button>
           </Col>
