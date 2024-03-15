@@ -1,10 +1,15 @@
 import { useRef, useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const TextDao = () => {
+  const genAI = new GoogleGenerativeAI(`${import.meta.env.VITE_GOOGLE_API_KEY}`);
+  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
   const textRef = useRef();
   const [questionHistory, setQuestionHistory] = useState([]);
   const [answerHistory, setAnswerHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleOnSubmit = async () => {
     let text = textRef?.current.value;
@@ -12,32 +17,17 @@ const TextDao = () => {
     if (text === "") {
       alert("Please write something...");
     } else {
-      const updatedQuestions = [...questionHistory, "↪ " + text];
+      setLoading(true);
+      const updatedQuestions = [...questionHistory, text + " ↩"];
       setQuestionHistory(updatedQuestions);
-      textRef.current.value = ''; // Clearing input field
-      try {
-        // const response = await fetch('/your-backend-endpoint', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({ question: text }),
-        // });
-        // if (!response.ok) {
-        //   throw new Error('Failed to fetch answer');
-        // }
-        // const data = await response.json();
-        // const updatedAnswers = [...answerHistory, data.answer];
-        // setAnswerHistory(updatedAnswers);
+      textRef.current.value = "";
 
-        const data = "working";
-        const updatedAnswers = [...answerHistory, "↩ " + data];
-        setAnswerHistory(updatedAnswers);
-      } catch (error) {
-        console.error('Error fetching answer:', error.message);
-        const updatedAnswers = [...answerHistory, 'Error fetching answer. Please try again later.'];
-        setAnswerHistory(updatedAnswers);
-      }
+      const result = await model.generateContent(text);
+      const response = await result.response;
+      const answer = response.text();
+      const updatedAnswers = [...answerHistory, "↪ " + answer];
+      setAnswerHistory(updatedAnswers);
+      setLoading(false);
     }
   };
 
@@ -46,7 +36,7 @@ const TextDao = () => {
       <p>↪ Hey, How can I help you?</p>
       {questionHistory.map((question, index) => (
         <div key={index}>
-          <p className="question">{question}</p>
+          <p className="question" style={{textAlign:"end"}}>{question}</p>
           <p className="answer">{answerHistory[index]}</p>
         </div>
       ))}
@@ -72,7 +62,11 @@ const TextDao = () => {
                 handleOnSubmit();
               }}
             >
-              Answer Me!
+              {loading ? (
+                <Spinner animation="border" size="sm" />
+              ) : (
+                "Answer Me!"
+              )}
             </Button>
           </Col>
         </Row>
