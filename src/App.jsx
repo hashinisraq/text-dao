@@ -5,7 +5,7 @@ import TextDao from "./components/TextDao/TextDao";
 
 function App() {
   return (
-    <div className="bg-dark">
+    <div className="bg-dark" style={{ height: "100vh", width: "100vw" }}>
         <Header />
         <hr style={{ color:"white" }}/>
       <Container className="bg-white" style={{ borderRadius: "10px" }}>

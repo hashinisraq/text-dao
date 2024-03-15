@@ -66,7 +66,7 @@ const TextDao = () => {
               {loading ? (
                 <Spinner animation="border" size="sm" />
               ) : (
-                "Answer Me!"
+                "Bolo Ekhon"
               )}
             </Button>
           </Col>
